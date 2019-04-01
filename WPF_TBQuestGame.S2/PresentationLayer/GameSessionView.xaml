@@ -10,6 +10,7 @@
         Width="800"
         Background="RosyBrown">
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
         <ControlTemplate x:Key="RoundTextBox" TargetType="{x:Type TextBoxBase}">
             <Border Background="{TemplateBinding Background}"   
                 x:Name="Bd" BorderBrush="Black"  
@@ -136,23 +137,27 @@
             x:Name="Button_LeftMove"
             Style="{StaticResource MovementButtons}"
             HorizontalAlignment="Left"
-            Content="3" 
+            Content="3"
+            Visibility="{Binding HasWestLocation, Converter={StaticResource BooleanToVisibility}}"
             Click="Button_LeftMove_Click"/>
         <Button
             x:Name="Button_RightMove"
             Style="{StaticResource MovementButtons}"
             HorizontalAlignment="Right"
-            Content="4" 
+            Content="4"
+            Visibility="{Binding HasEastLocation, Converter={StaticResource BooleanToVisibility}}"
             Click="Button_RightMove_Click"/>
         <Button
             x:Name="Button_UpMove"
             Style="{StaticResource MovementButtons}"
             VerticalAlignment="Top"
             Content="5"
+            Visibility="{Binding HasNorthLocation, Converter={StaticResource BooleanToVisibility}}"
             Click="Button_UpMove_Click"/>
         <Button
             x:Name="Button_DownMove"
             Style="{StaticResource MovementButtons}"
+            Visibility="{Binding HasSouthLocation, Converter={StaticResource BooleanToVisibility}}"
             VerticalAlignment="Bottom"
             Content="6" 
             Click="Button_DownMove_Click"/>
@@ -163,7 +168,7 @@
                     HorizontalAlignment="Center"
                     Foreground="#3a6161"/>
                 <TextBox
-                    Text="{Binding CurrentLocation.Name, Mode=OneWay}"
+                    Text="{Binding CurrentLocation.Name}"
                     IsReadOnly="False"
                     Width="250"
                     HorizontalAlignment="Center"/>

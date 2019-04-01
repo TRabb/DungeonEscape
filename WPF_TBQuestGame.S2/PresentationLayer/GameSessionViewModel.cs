@@ -41,7 +41,10 @@ namespace WPF_TBQuestGame.PresentationLayer
         public Location CurrentLocation
         {
             get { return _currentLocation; }
-            set { _currentLocation = value; }
+            set {
+                _currentLocation = value;
+                OnPropertyChanged(nameof(CurrentLocation));
+                }
         }
 
         public Location NorthLocation
@@ -197,7 +200,7 @@ namespace WPF_TBQuestGame.PresentationLayer
                 _gameMap.MoveNorth();
                 UpdateAvailableTravelPoints();
                 CurrentLocation = _gameMap.CurrentLocation;
-              
+                //OnPlayerMove();              
             }
         }
 
@@ -208,6 +211,7 @@ namespace WPF_TBQuestGame.PresentationLayer
                 _gameMap.MoveEast();
                 UpdateAvailableTravelPoints();
                 CurrentLocation = _gameMap.CurrentLocation;
+                //OnPlayerMove();
             }
         }
 
@@ -218,6 +222,7 @@ namespace WPF_TBQuestGame.PresentationLayer
                 _gameMap.MoveSouth();
                 UpdateAvailableTravelPoints();
                 CurrentLocation = _gameMap.CurrentLocation;
+                //OnPlayerMove();
             }
         }
 
@@ -228,6 +233,7 @@ namespace WPF_TBQuestGame.PresentationLayer
                 _gameMap.MoveWest();
                 UpdateAvailableTravelPoints();
                 CurrentLocation = _gameMap.CurrentLocation;
+                //OnPlayerMove();
             }
         }
 

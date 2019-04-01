@@ -1,0 +1,235 @@
+﻿<Window x:Class="WPF_TBQuestGame.PresentationLayer.GameSessionView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF_TBQuestGame.PresentationLayer"
+        mc:Ignorable="d"
+        Title="Dungeon Escape"
+        Height="450"
+        Width="800"
+        Background="RosyBrown">
+    <Window.Resources>
+        <ControlTemplate x:Key="RoundTextBox" TargetType="{x:Type TextBoxBase}">
+            <Border Background="{TemplateBinding Background}"   
+                x:Name="Bd" BorderBrush="Black"  
+                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
+                <ScrollViewer x:Name="PART_ContentHost"/>
+            </Border>
+        </ControlTemplate>
+        <Style x:Key="CharacterInfoStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="140"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+        <Style x:Key="MovementButtons" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Margin" Value="7"/>
+            <Setter Property="Grid.Column" Value="1"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontFamily" Value="Marlett"/>
+        </Style>
+        <Style x:Key="MessageBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="175"/>
+            <Setter Property="Width" Value="250"/>
+            <Setter Property="Grid.Column" Value="1"/>
+        </Style>
+        <Style x:Key="ActionButtons" TargetType="Button">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Margin" Value="10"/>
+        </Style>
+        <Style x:Key="StatLabels" TargetType="Label">
+            <Setter Property="FontFamily" Value="Profont"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+            <Setter Property="Foreground" Value="#3a6161"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.25*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1.25*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height=".5*"/>
+        </Grid.RowDefinitions>
+        <Label
+            Grid.Column="2"
+            Content="Inventory"
+            HorizontalAlignment="Center"
+            FontSize="18"
+            Foreground="#3a6161"/>
+        <Border BorderThickness="3" BorderBrush="Black" Height="220" Width="175" Grid.Column="2">
+        <TextBox
+            Height="220"
+            Width="175"
+            VerticalAlignment="Top"/>            
+        </Border>
+
+        <StackPanel
+            Grid.Row="1">
+            <StackPanel
+            Grid.Row="1"
+            Orientation="Horizontal">
+                <Label
+                Style="{StaticResource StatLabels}"
+                Content="Name"/>
+                <TextBox
+                Text="{Binding Player.Name}"
+                Style="{StaticResource CharacterInfoStyle}"
+                Margin="7,3,0,0"
+            />
+            </StackPanel>
+            <StackPanel 
+            Grid.Row="1"
+            Orientation="Horizontal">
+                <Label                
+                Style="{StaticResource StatLabels}"
+                Content="Class"/>
+                <TextBox
+                Text="{Binding Player.Class}"
+                Style="{StaticResource CharacterInfoStyle}"
+                Margin="12,3,0,0"
+            />
+            </StackPanel>
+            <StackPanel
+            Grid.Row="1"
+            Orientation="Horizontal">
+                <Label
+                Style="{StaticResource StatLabels}"
+                Content="Age"/>
+                <TextBox
+                Text="{Binding Player.Age}"
+                Style="{StaticResource CharacterInfoStyle}"
+                Margin="18,3,0,0"
+            />
+            </StackPanel>
+            <!--<StackPanel
+            Grid.Row="1"
+            Orientation="Horizontal">
+                <Label
+                Style="{StaticResource StatLabels}"
+                Content="EXP"
+                />
+                <TextBox
+                Text="{Binding Player.Experience}"
+                Style="{StaticResource CharacterInfoStyle}"
+                Margin="18,3,0,0"
+            />
+            </StackPanel>-->
+
+        </StackPanel>
+        <Border BorderThickness="3" BorderBrush="Black" Height="175" Width="250" Grid.Column="1">
+        <TextBox
+            Style="{StaticResource MessageBoxStyle}"
+            Text="{Binding CurrentLocation.Message, Mode=OneWay}"
+            IsReadOnly="True"
+            />
+        </Border>
+
+        <Button
+            x:Name="Button_LeftMove"
+            Style="{StaticResource MovementButtons}"
+            HorizontalAlignment="Left"
+            Content="3" 
+            Click="Button_LeftMove_Click"/>
+        <Button
+            x:Name="Button_RightMove"
+            Style="{StaticResource MovementButtons}"
+            HorizontalAlignment="Right"
+            Content="4" 
+            Click="Button_RightMove_Click"/>
+        <Button
+            x:Name="Button_UpMove"
+            Style="{StaticResource MovementButtons}"
+            VerticalAlignment="Top"
+            Content="5"
+            Click="Button_UpMove_Click"/>
+        <Button
+            x:Name="Button_DownMove"
+            Style="{StaticResource MovementButtons}"
+            VerticalAlignment="Bottom"
+            Content="6" 
+            Click="Button_DownMove_Click"/>
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <StackPanel>
+                <Label
+                    Content="Current Location"
+                    HorizontalAlignment="Center"
+                    Foreground="#3a6161"/>
+                <TextBox
+                    Text="{Binding CurrentLocation.Name, Mode=OneWay}"
+                    IsReadOnly="False"
+                    Width="250"
+                    HorizontalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button
+                    Style="{StaticResource ActionButtons}"
+                    Content="Attack"
+                    />
+                <Button
+                    Style="{StaticResource ActionButtons}"
+                    Content="Run"
+                    />
+                <Button
+                    Style="{StaticResource ActionButtons}"
+                    Content="Heal"
+                    />
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button
+                    Style="{StaticResource ActionButtons}"
+                    Content="Help"
+                    />
+                <Button
+                    Style="{StaticResource ActionButtons}"
+                    Content="Exit"
+                    Click="Button_Click_Exit"
+                    />
+            </StackPanel>
+        </StackPanel>
+        <Border BorderThickness="5" BorderBrush="Black" Height="200" Width="184">
+            <Image
+            Source="{Binding SelectedProduct.ImageFilePath}"
+            Height="200"/>
+        </Border>
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="2">
+            <StackPanel
+                Orientation="Horizontal">
+                <Label
+                Style="{StaticResource StatLabels}"
+                Content="Health"
+                />
+                <TextBox
+                Text="{Binding Player.Health}"
+                Style="{StaticResource CharacterInfoStyle}"
+            />
+            </StackPanel>
+            <StackPanel
+                Orientation="Horizontal">
+                <Label
+                Style="{StaticResource StatLabels}"
+                Content="EXP"
+                Margin="14,0,0,0"
+                
+                />
+                <TextBox
+                Text="{Binding Player.Experience}"
+                Style="{StaticResource CharacterInfoStyle}"
+            />
+            </StackPanel>
+        </StackPanel>
+
+
+    </Grid>
+</Window>

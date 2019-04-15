@@ -80,10 +80,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Character.cs" />
+    <Compile Include="Models\Flask.cs" />
+    <Compile Include="Models\GameItem.cs" />
     <Compile Include="Models\GameMapCoordinates.cs" />
+    <Compile Include="Models\Key.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Map.cs" />
     <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\Weapon.cs" />
     <Compile Include="ObservableObject.cs" />
     <Compile Include="PresentationLayer\GameSessionView.xaml.cs">
       <DependentUpon>GameSessionView.xaml</DependentUpon>

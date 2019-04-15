@@ -52,5 +52,22 @@ namespace WPF_TBQuestGame.PresentationLayer
         {
             Environment.Exit(0);
         }
+
+        private void Button_PickUp_Click(object sender, RoutedEventArgs e)
+        {
+            if (RoomItemsDataGrid.SelectedItem != null)
+            {
+                _gameSessionViewModel.AddItemToInventory();
+            }
+
+        }
+
+        private void Button_PutDown_Click(object sender, RoutedEventArgs e)
+        {
+            if (InventoryDataGrid.SelectedItem != null)
+            {
+                _gameSessionViewModel.RemoveItemFromInventory();
+            }
+        }
     }
 }

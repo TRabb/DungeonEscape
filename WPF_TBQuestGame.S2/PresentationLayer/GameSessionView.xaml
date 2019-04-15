@@ -48,6 +48,11 @@
             <Setter Property="Margin" Value="0,4,0,0"/>
             <Setter Property="Foreground" Value="#3a6161"/>
         </Style>
+        <Style x:Key="InventoryButtons" TargetType="Button">
+            <Setter Property="Width" Value="60"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Margin" Value="10"/>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -65,13 +70,89 @@
             HorizontalAlignment="Center"
             FontSize="18"
             Foreground="#3a6161"/>
-        <Border BorderThickness="3" BorderBrush="Black" Height="220" Width="175" Grid.Column="2">
-        <TextBox
-            Height="220"
-            Width="175"
-            VerticalAlignment="Top"/>            
+        
+        <Border BorderThickness="3" BorderBrush="Black" Height="200" Width="215">
+            <TabControl
+                x:Name="LocationInfoTabControl"
+                Width="210">
+                <TabItem Header="Items"
+                         x:Name="ItemsInfoTabItem"
+                         Width="215">
+                    <DataGrid
+                    x:Name="RoomItemsDataGrid"
+                    ItemsSource="{Binding CurrentLocation.GameItems}"
+                    SelectedItem="{Binding CurrentGameItem}"
+                    AutoGenerateColumns="False"
+                    HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                            Header="Description"
+                            IsReadOnly="True"
+                            Binding="{Binding Description, Mode=OneWay}"
+                            Width="*">
+                            </DataGridTextColumn>
+                            <DataGridTextColumn
+                            Header="Value"
+                            IsReadOnly="True"
+                            Binding="{Binding Value, Mode=OneWay}"
+                            Width="Auto">
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </TabItem>
+
+            </TabControl>
         </Border>
 
+        <Border BorderThickness="3" BorderBrush="Black" Height="180" Width="175" Grid.Column="2">
+
+            <DataGrid
+                x:Name="InventoryDataGrid"
+                ItemsSource="{Binding Player.Inventory}"
+                SelectedItem="{Binding CurrentGameItem}"
+                AutoGenerateColumns="False"
+                HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name"
+                                        Binding="{Binding Name, Mode=OneWay}"
+                                        Width="*"/>
+                    <DataGridTextColumn Header="Value"
+                                        Binding="{Binding Value, Mode=OneWay}"
+                                        Width="Auto"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            
+
+        </Border>
+
+        <Button
+            x:Name="Button_PickUp"
+            Grid.Row="0"
+            Grid.Column="2"
+            Content="Pick Up"
+            Style="{StaticResource InventoryButtons}"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom" Click="Button_PickUp_Click"
+            />
+        <Button
+            x:Name="Button_PutDown"
+            Grid.Row="0"
+            Grid.Column="2"
+            Content="Put Down"
+            Style="{StaticResource InventoryButtons}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom" Click="Button_PutDown_Click"
+            />
+        <Button
+            x:Name="Button_Use"
+            Grid.Row="0"
+            Grid.Column="2"
+            Content="Use"
+            Style="{StaticResource InventoryButtons}"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            />
         <StackPanel
             Grid.Row="1">
             <StackPanel
@@ -201,11 +282,7 @@
                     />
             </StackPanel>
         </StackPanel>
-        <Border BorderThickness="5" BorderBrush="Black" Height="200" Width="184">
-            <Image
-            Source="{Binding SelectedProduct.ImageFilePath}"
-            Height="200"/>
-        </Border>
+
         <StackPanel
             Grid.Row="1"
             Grid.Column="2">
@@ -234,6 +311,7 @@
             />
             </StackPanel>
         </StackPanel>
+
 
 
     </Grid>

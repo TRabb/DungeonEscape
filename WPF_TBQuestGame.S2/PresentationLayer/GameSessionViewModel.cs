@@ -17,6 +17,9 @@ namespace WPF_TBQuestGame.PresentationLayer
         private Map _gameMap;
         private Location _currentLocation;
         private Location _northLocation, _eastLocation, _southLocation, _westLocation;
+        private string _currentLocationInformation;
+
+        private GameItem _currentGameItem;
 
         #endregion
 
@@ -43,8 +46,20 @@ namespace WPF_TBQuestGame.PresentationLayer
             get { return _currentLocation; }
             set {
                 _currentLocation = value;
+                _currentLocationInformation = _currentLocation.Description;
                 OnPropertyChanged(nameof(CurrentLocation));
+                OnPropertyChanged(nameof(CurrentLocationInformation));
                 }
+        }
+
+        public string CurrentLocationInformation
+        {
+            get { return _currentLocationInformation; }
+            set
+            {
+                _currentLocationInformation = value;
+                OnPropertyChanged(nameof(CurrentLocationInformation));
+            }
         }
 
         public Location NorthLocation
@@ -94,6 +109,12 @@ namespace WPF_TBQuestGame.PresentationLayer
         public bool HasEastLocation { get { return EastLocation != null; } }
         public bool HasSouthLocation { get { return SouthLocation != null; } }
         public bool HasWestLocation { get { return WestLocation != null; } }
+
+        public GameItem CurrentGameItem
+        {
+            get { return _currentGameItem; }
+            set { _currentGameItem = value; }
+        }
         #endregion
 
         #region CONSTRUCTORS
@@ -125,8 +146,11 @@ namespace WPF_TBQuestGame.PresentationLayer
         private void InitializeView()
         {
             UpdateAvailableTravelPoints();
+            _player.UpdateInventoryCategories();
+            _currentLocationInformation = CurrentLocation.Description;
         }
 
+        #region MOVEMENT
         private void OnPlayerMove()
         {
             //
@@ -200,7 +224,7 @@ namespace WPF_TBQuestGame.PresentationLayer
                 _gameMap.MoveNorth();
                 UpdateAvailableTravelPoints();
                 CurrentLocation = _gameMap.CurrentLocation;
-                //OnPlayerMove();              
+                OnPlayerMove();              
             }
         }
 
@@ -211,7 +235,7 @@ namespace WPF_TBQuestGame.PresentationLayer
                 _gameMap.MoveEast();
                 UpdateAvailableTravelPoints();
                 CurrentLocation = _gameMap.CurrentLocation;
-                //OnPlayerMove();
+                OnPlayerMove();
             }
         }
 
@@ -222,7 +246,7 @@ namespace WPF_TBQuestGame.PresentationLayer
                 _gameMap.MoveSouth();
                 UpdateAvailableTravelPoints();
                 CurrentLocation = _gameMap.CurrentLocation;
-                //OnPlayerMove();
+                OnPlayerMove();
             }
         }
 
@@ -233,9 +257,90 @@ namespace WPF_TBQuestGame.PresentationLayer
                 _gameMap.MoveWest();
                 UpdateAvailableTravelPoints();
                 CurrentLocation = _gameMap.CurrentLocation;
-                //OnPlayerMove();
+                OnPlayerMove();
             }
         }
+        #endregion
+
+        #region ACTIONS
+
+        /// <summary>
+        /// add selected item
+        /// </summary>
+        /// <param name="selectedGameItem"></param>
+        public void AddItemToInventory()
+        {
+            if (_currentGameItem != null && _currentLocation.GameItems.Contains(_currentGameItem))
+            {
+                GameItem selectedGameItem = _currentGameItem as GameItem;
+
+                _currentLocation.RemoveGameItemFromLocation(selectedGameItem);
+                _player.AddGameItemToInventory(selectedGameItem);
+
+                OnPlayerPickUp(selectedGameItem);
+
+            }
+        }
+
+        /// <summary>
+        /// remove selected item
+        /// </summary>
+        /// <param name="selectedGameItem"></param>
+        public void RemoveItemFromInventory()
+        {
+            if (_currentGameItem != null)
+            {
+                GameItem selectedGameItem = _currentGameItem as GameItem;
+
+                _currentLocation.AddGameItemToLocation(selectedGameItem);
+                _player.RemoveGameItemFromInventory(selectedGameItem);
+
+            }
+        }
+
+        private void OnPlayerPickUp(GameItem gameItem)
+        {
+            _player.Experience += gameItem.ExperiencePoints;
+        }
+
+        private void OnPlayerPutDown(GameItem gameItem)
+        {
+            _player.Experience -= gameItem.ExperiencePoints;
+        }
+
+        public void OnUseGameItem()
+        {
+            switch (_currentGameItem)
+            {
+                case Flask flask:
+                    //ProcessFlaskUse(flask);
+                    break;
+                case Key key:
+                    ProcessKeyUse(key);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void ProcessKeyUse(Key key)
+        {
+            string message;
+
+            switch (key.UseAction)
+            {
+                case Key.UseActionType.OPENLOCATION:
+                    message = _gameMap.OpenLocationsByKey(key.Id);
+                    //CurrentLocationInformation = key.UseMessage;
+                    break;
+                case Key.UseActionType.DAMAGEPLAYER:
+                    break;
+                default:
+                    break;
+            }
+        }
+        #endregion
+
 
         #endregion
 

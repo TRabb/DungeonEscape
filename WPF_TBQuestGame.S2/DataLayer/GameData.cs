@@ -21,9 +21,20 @@ namespace WPF_TBQuestGame.DataLayer
                 Health = 100,
                 Experience = 0,
                 Age = 18,
+                Inventory = new ObservableCollection<GameItem>()
+                {
+                    GameItemByID(1002),
+                    GameItemByID(3000)
+                }
 
             };
         }
+
+        private static GameItem GameItemByID(int id)
+        {
+            return StandardGameItems().FirstOrDefault(i => i.Id == id);
+        }
+
         public static List<string> InitialMessages()
         {
             return new List<string>()
@@ -44,6 +55,8 @@ namespace WPF_TBQuestGame.DataLayer
 
             Map gameMap = new Map(rows, columns);
 
+            gameMap.StandardGameItems = StandardGameItems();
+
             gameMap.MapLocations[0, 0] = new Location()
             {
 
@@ -54,8 +67,12 @@ namespace WPF_TBQuestGame.DataLayer
                           "\na very unfamiliar place. It seems to be some" +
                           "\nsort of cellar with a door to the east and a" +
                           "\ndoor to the south.",
-                ModifiyExperiencePoints = 5,
-                Accessible = true
+                ModifiyExperiencePoints = 0,
+                Accessible = true,
+                GameItems = new ObservableCollection<GameItem>
+                {
+                    GameItemByID(2000) 
+                }
      
             };
             gameMap.MapLocations[1, 0] = new Location()
@@ -76,7 +93,7 @@ namespace WPF_TBQuestGame.DataLayer
                 Name = "Row 2 Column 0",
                 Description = "Row 2 Column 0",
                 Message = "Test 3",
-                ModifiyExperiencePoints = 5,
+                ModifiyExperiencePoints = 15,
                 Accessible = true
 
             };
@@ -98,7 +115,7 @@ namespace WPF_TBQuestGame.DataLayer
                 Name = "Row 2 Column 1",
                 Description = "Row 2 Column 1",
                 Message = "Test 5",
-                ModifiyExperiencePoints = 5,
+                ModifiyExperiencePoints = 25,
                 Accessible = true
 
             };
@@ -120,7 +137,7 @@ namespace WPF_TBQuestGame.DataLayer
                 Name = "Row 0 Column 2",
                 Description = "Row 0 Column 2",
                 Message = "Test 7",
-                ModifiyExperiencePoints = 5,
+                ModifiyExperiencePoints = 15,
                 Accessible = true
 
             };
@@ -131,7 +148,7 @@ namespace WPF_TBQuestGame.DataLayer
                 Name = "Row 1 Column 2",
                 Description = "Row 1 Column 2",
                 Message = "Test 8",
-                ModifiyExperiencePoints = 5,
+                ModifiyExperiencePoints = 25,
                 Accessible = true
 
             };
@@ -142,7 +159,7 @@ namespace WPF_TBQuestGame.DataLayer
                 Name = "Row 3 Column 2",
                 Description = "Row 3 Column 2",
                 Message = "Test 9",
-                ModifiyExperiencePoints = 5,
+                ModifiyExperiencePoints = 35,
                 Accessible = true
 
             };
@@ -164,7 +181,7 @@ namespace WPF_TBQuestGame.DataLayer
                 Name = "Row 3 Column 3",
                 Description = "Row 3 Column 3",
                 Message = "Test 11",
-                ModifiyExperiencePoints = 5,
+                ModifiyExperiencePoints = 35,
                 Accessible = true
 
             };
@@ -175,15 +192,26 @@ namespace WPF_TBQuestGame.DataLayer
                 Name = "Boss",
                 Description = "Boss",
                 Message = "Test 12",
-                ModifiyExperiencePoints = 5,
-                Accessible = true
+                ModifiyExperiencePoints = 100,
+                Accessible = false,
+                RequiredKeyID = 3000
 
             };
 
-
-
-
             return gameMap;
+        }
+
+        public static List<GameItem> StandardGameItems()
+        {
+            return new List<GameItem>()
+            {
+                new Weapon(1000, "Rusty Longsword", 25, 1, 5, "This longsword is very worn and seems to have been used in many battles.", 10),
+                new Weapon(1001, "Oak Shortbow", 25, 1, 5, "This shortbow seems to be made of oak and the string is starting to fray.", 10),
+                new Weapon(1002, "Wand of Spark", 25, 1, 5, "This wand looks like a old branch that was broken off many years ago.", 10),
+                new Flask(2000, "Flask of Healing", 10, 25, "A flask that heals you for 25 hitpoints.", 5),
+                new Flask(2001, "Flask of Greater Healing", 20, 50, "A flask that heals you for 50 hitpoints.", 10),
+                new Key(3000, "Mysterious Key", 100, "A key that may be useful in the future.", 25)
+            };
         }
     }
 }

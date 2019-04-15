@@ -14,6 +14,7 @@ namespace WPF_TBQuestGame.Models
         private Location[,] _mapLocations;
         private int _maxRows, _maxColumns;
         private GameMapCoordinates _currentLocationCoordinates;
+        private List<GameItem> _standardGameItems;
 
         #endregion
 
@@ -36,6 +37,11 @@ namespace WPF_TBQuestGame.Models
             get { return _mapLocations[_currentLocationCoordinates.Row, _currentLocationCoordinates.Column]; }
         }
 
+        public List<GameItem> StandardGameItems
+        {
+            get { return _standardGameItems; }
+            set { _standardGameItems = value; }
+        }
         #endregion
 
         #region CONSTRUCTORS
@@ -51,6 +57,29 @@ namespace WPF_TBQuestGame.Models
 
         #region METHODS
 
+        public string OpenLocationsByKey(int keyId)
+        {
+            string message = "The key doesn't seem to fit...";
+            Location mapLocation = new Location();
+
+            for (int row = 0; row < _maxRows; row++)
+            {
+                for (int column = 0; column < _maxColumns; column++)
+                {
+                    mapLocation = _mapLocations[row, column];
+
+                    if (mapLocation != null && mapLocation.RequiredKeyID == keyId)
+                    {
+                        mapLocation.Accessible = true;
+                        message = $"{mapLocation.Name} is now accessible.";
+                    }
+                }
+            }
+
+            return message;
+        }
+
+        #region MOVEMENT
         public void MoveNorth()
         {
             //
@@ -199,6 +228,8 @@ namespace WPF_TBQuestGame.Models
 
             return westLocation;
         }
+        #endregion
+
         #endregion
     }
 }

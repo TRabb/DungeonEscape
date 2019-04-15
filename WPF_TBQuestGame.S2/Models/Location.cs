@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,10 @@ namespace WPF_TBQuestGame.Models
         private int _modifiyExperiencePoints;
         private int _modifyHealth;
         private string _message;
+        private int _requiredKeyId;
+        private ObservableCollection<GameItem> _gameItems;
+
+
 
 
         #endregion
@@ -70,6 +75,66 @@ namespace WPF_TBQuestGame.Models
             set { _message = value; }
         }
 
+        public int RequiredKeyID
+        {
+            get { return _requiredKeyId; }
+            set { _requiredKeyId = value; }
+        }
+
+        public ObservableCollection<GameItem> GameItems
+        {
+            get { return _gameItems; }
+            set { _gameItems = value; }
+        }
+        #endregion
+
+        #region CONSTRUCTOR
+
+        public Location()
+        {
+            _gameItems = new ObservableCollection<GameItem>();
+        }
+
+        #endregion
+
+        #region METHODS
+
+        public void AddGameItemToLocation(GameItem selectedGameItem)
+        {
+            if (selectedGameItem != null)
+            {
+                _gameItems.Add(selectedGameItem);
+            }
+
+            UpdateLocationGameItems();
+        }
+
+        public void RemoveGameItemFromLocation(GameItem selectedGameItem)
+        {
+            if (selectedGameItem != null)
+            {
+                _gameItems.Remove(selectedGameItem);
+            }
+
+            UpdateLocationGameItems();
+        }
+
+        public void UpdateLocationGameItems()
+        {
+            ObservableCollection<GameItem> updatedLocationGameItems = new ObservableCollection<GameItem>();
+
+            foreach (GameItem GameItem in _gameItems)
+            {
+                updatedLocationGameItems.Add(GameItem);
+            }
+
+            GameItems.Clear();
+
+            foreach (GameItem gameItem in updatedLocationGameItems)
+            {
+                GameItems.Add(gameItem);
+            }
+        }
         #endregion
     }
 }

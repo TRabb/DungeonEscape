@@ -15,6 +15,7 @@ namespace WPF_TBQuestGame.Models
             Archer,
             Wizard      
         }
+
         #region FIELDS
         protected int _health;
         protected int _exp;
@@ -22,6 +23,9 @@ namespace WPF_TBQuestGame.Models
         protected string ImageFileName;
         private int _age;
         private List<Location> _locationsVisited;
+        private int _skillLevel;
+        private Weapon _currentWeapon;
+        private BattleModeName _battleMode;
         private ObservableCollection<GameItem> _inventory;
         private ObservableCollection<GameItem> _weapon;
         private ObservableCollection<GameItem> _flask;
@@ -66,6 +70,24 @@ namespace WPF_TBQuestGame.Models
         {
             get { return _locationsVisited; }
             set { _locationsVisited = value; }
+        }
+
+        public int SkillLevel
+        {
+            get { return _skillLevel; }
+            set { _skillLevel = value; }
+        }
+
+        public Weapon CurrentWeapon
+        {
+            get { return _currentWeapon; }
+            set { _currentWeapon = value; }
+        }
+
+        public BattleModeName BattleMode
+        {
+            get { return _battleMode; }
+            set { _battleMode = value; }
         }
 
         public ObservableCollection<GameItem> Inventory
@@ -162,7 +184,49 @@ namespace WPF_TBQuestGame.Models
             return $"Hello, my name is {_name} and I am {article} {Class} trying to escape this dungeon.";
         }
 
+        #region BATTLE METHODS
+
+        public int Attack()
+        {
+            int hitPoints = random.Next(CurrentWeapon.MinimumDamage, CurrentWeapon.MaximumDamage) * _skillLevel;
+
+            if (hitPoints <= 100)
+            {
+                return hitPoints;
+            }
+            else
+            {
+                return 100;
+            }
+        }
+
+
+        public int Defend()
+        {
+            int hitPoints = (random.Next(CurrentWeapon.MinimumDamage, CurrentWeapon.MaximumDamage) * _skillLevel) - DEFENDER_DAMAGE_ADJUSTMENT;
+
+            if (hitPoints >= 0 && hitPoints <= 100)
+            {
+                return hitPoints;
+            }
+            else if (hitPoints > 100)
+            {
+                return 100;
+            }
+            else
+            {
+                return 0;
+            }
+        }
         #endregion
 
+        #endregion
+
+        #region BATTLE CONSTANTS
+
+        private const int DEFENDER_DAMAGE_ADJUSTMENT = 10;
+        private const int MAXIMUM_RETREAT_DAMAGE = 10;
+
+        #endregion
     }
 }

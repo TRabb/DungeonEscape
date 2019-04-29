@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:WPF_TBQuestGame.PresentationLayer"
         mc:Ignorable="d"
         Title="Dungeon Escape"
-        Height="450"
-        Width="800"
+        Height="700"
+        Width="1100"
         Background="RosyBrown">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
@@ -34,8 +34,8 @@
             <Setter Property="FontFamily" Value="Marlett"/>
         </Style>
         <Style x:Key="MessageBoxStyle" TargetType="TextBox">
-            <Setter Property="Height" Value="175"/>
-            <Setter Property="Width" Value="250"/>
+            <Setter Property="Height" Value="330"/>
+            <Setter Property="Width" Value="375"/>
             <Setter Property="Grid.Column" Value="1"/>
         </Style>
         <Style x:Key="ActionButtons" TargetType="Button">
@@ -51,7 +51,7 @@
         <Style x:Key="InventoryButtons" TargetType="Button">
             <Setter Property="Width" Value="60"/>
             <Setter Property="Height" Value="25"/>
-            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Margin" Value="8"/>
         </Style>
     </Window.Resources>
     <Grid>
@@ -71,13 +71,14 @@
             FontSize="18"
             Foreground="#3a6161"/>
         
-        <Border BorderThickness="3" BorderBrush="Black" Height="200" Width="215">
             <TabControl
                 x:Name="LocationInfoTabControl"
-                Width="210">
+                Width="275"
+                Height="300"
+                VerticalAlignment="Top">
                 <TabItem Header="Items"
                          x:Name="ItemsInfoTabItem"
-                         Width="215">
+                         Width="50">
                     <DataGrid
                     x:Name="RoomItemsDataGrid"
                     ItemsSource="{Binding CurrentLocation.GameItems}"
@@ -99,13 +100,59 @@
                             </DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
+                </TabItem>
 
+                <TabItem Header="NPCs"
+                         x:Name="NPCsInfoTabItem">
+                    <DataGrid
+                        x:Name="LocationNPCsDataGrid"
+                        Height="300"
+                        ItemsSource="{Binding CurrentLocation.NPCs}"
+                        SelectedItem="{Binding CurrentNPC}"
+                        AutoGenerateColumns="False"
+                        HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Header="Description"
+                                IsReadOnly="True"
+                                Binding="{Binding Information, Mode=OneWay}"
+                                Width="*">
+                                <DataGridTextColumn.EditingElementStyle>
+                                    <Style>
+                                        <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                                    </Style>
+                                </DataGridTextColumn.EditingElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </TabItem>
 
             </TabControl>
-        </Border>
 
-        <Border BorderThickness="3" BorderBrush="Black" Height="180" Width="175" Grid.Column="2">
+        <StackPanel
+            Grid.Column="0"
+            Grid.Row="0"
+            VerticalAlignment="Bottom">
+            <Label
+                Content="NPC Messages"
+                HorizontalAlignment="Center"
+                Style="{StaticResource StatLabels}"
+                FontSize="16"
+                />
+            <Border BorderThickness="3" BorderBrush="Black" Height="100" Width="275">
+            <TextBox
+                Height="100"
+                Width="275"
+                VerticalAlignment="Bottom"
+                VerticalContentAlignment="Top"
+                Padding="3"
+                Text="{Binding CurrentLocationInformation}"/>       
+            </Border>
+  
+        </StackPanel>
+
+
+        <Border BorderThickness="3" BorderBrush="Black" Height="275" Width="220" Grid.Column="2" Margin="0,0,0,40">
 
             <DataGrid
                 x:Name="InventoryDataGrid"
@@ -126,7 +173,14 @@
 
         </Border>
 
-        <Button
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="2"
+            VerticalAlignment="Top"
+            Orientation="Horizontal"
+            HorizontalAlignment="Center">
+
+            <Button
             x:Name="Button_PickUp"
             Grid.Row="0"
             Grid.Column="2"
@@ -135,7 +189,7 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom" Click="Button_PickUp_Click"
             />
-        <Button
+            <Button
             x:Name="Button_PutDown"
             Grid.Row="0"
             Grid.Column="2"
@@ -144,16 +198,18 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Bottom" Click="Button_PutDown_Click"
             />
-        <Button
+            <Button
             x:Name="Button_Use"
             Grid.Row="0"
             Grid.Column="2"
             Content="Use"
             Style="{StaticResource InventoryButtons}"
             HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
+            VerticalAlignment="Bottom" Click="Button_Use_Click"
             />
-        <StackPanel
+        </StackPanel>
+        
+        <StackPanel VerticalAlignment="Center"
             Grid.Row="1">
             <StackPanel
             Grid.Row="1"
@@ -206,7 +262,7 @@
             </StackPanel>-->
 
         </StackPanel>
-        <Border BorderThickness="3" BorderBrush="Black" Height="175" Width="250" Grid.Column="1">
+        <Border BorderThickness="3" BorderBrush="Black" Height="330" Width="375" Grid.Column="1">
         <TextBox
             Style="{StaticResource MessageBoxStyle}"
             Text="{Binding CurrentLocation.Message, Mode=OneWay}"
@@ -252,29 +308,24 @@
                     Text="{Binding CurrentLocation.Name}"
                     IsReadOnly="False"
                     Width="250"
+                    Height="25"
                     HorizontalAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button
+                    x:Name="Button_Attack"
                     Style="{StaticResource ActionButtons}"
-                    Content="Attack"
+                    Content="Attack" Click="Button_Attack_Click"
                     />
                 <Button
                     Style="{StaticResource ActionButtons}"
-                    Content="Run"
+                    Content="Speak To" Click="Button_Click"
                     />
-                <Button
-                    Style="{StaticResource ActionButtons}"
-                    Content="Heal"
-                    />
+
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button
-                    Style="{StaticResource ActionButtons}"
-                    Content="Help"
-                    />
                 <Button
                     Style="{StaticResource ActionButtons}"
                     Content="Exit"
@@ -284,6 +335,15 @@
         </StackPanel>
 
         <StackPanel
+            VerticalAlignment="Bottom"
+            Grid.Row="0"
+            Grid.Column="2">
+            <StackPanel
+                Orientation="Vertical"/>
+
+        </StackPanel>
+
+        <StackPanel VerticalAlignment="Center"
             Grid.Row="1"
             Grid.Column="2">
             <StackPanel

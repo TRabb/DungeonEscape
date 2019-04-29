@@ -79,13 +79,19 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\BattleModeEnum.cs" />
     <Compile Include="Models\Character.cs" />
+    <Compile Include="Models\Enemies.cs" />
     <Compile Include="Models\Flask.cs" />
     <Compile Include="Models\GameItem.cs" />
     <Compile Include="Models\GameMapCoordinates.cs" />
+    <Compile Include="Models\IBattle.cs" />
+    <Compile Include="Models\ISpeak.cs" />
     <Compile Include="Models\Key.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Map.cs" />
+    <Compile Include="Models\Merchants.cs" />
+    <Compile Include="Models\NPC.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\Weapon.cs" />
     <Compile Include="ObservableObject.cs" />

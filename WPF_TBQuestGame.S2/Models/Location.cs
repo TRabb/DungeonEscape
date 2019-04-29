@@ -23,10 +23,8 @@ namespace WPF_TBQuestGame.Models
         private int _modifyHealth;
         private string _message;
         private int _requiredKeyId;
-        private ObservableCollection<GameItem> _gameItems;
-
-
-
+        private ObservableCollection<GameItem> _gameItems;      
+        private ObservableCollection<NPC> _npcs;
 
         #endregion
 
@@ -86,6 +84,13 @@ namespace WPF_TBQuestGame.Models
             get { return _gameItems; }
             set { _gameItems = value; }
         }
+
+        public ObservableCollection<NPC> NPCs
+        {
+            get { return _npcs; }
+            set { _npcs = value; }
+        }
+
         #endregion
 
         #region CONSTRUCTOR

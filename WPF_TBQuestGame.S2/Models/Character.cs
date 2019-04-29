@@ -22,7 +22,7 @@ namespace WPF_TBQuestGame.Models
         #region FIELDS
         protected int _id;
         protected string _name;
-        protected int _locationId;
+        //protected int _locationId;
         #endregion
 
         #region PROPERTIES
@@ -38,22 +38,27 @@ namespace WPF_TBQuestGame.Models
             set { _name = value; }
         }
 
-        public int LocationID
-        {
-            get { return _locationId; }
-            set { _locationId = value; }
-        }
+        //public int LocationID
+        //{
+        //    get { return _locationId; }
+        //    set { _locationId = value; }
+        //}
 
         #endregion
 
         #region CONSTRUCTORS
 
-        //public Character(int Id, string Name, int LocationID)
-        //{
-        //    ID = _id;
-        //    Name = _name;
-        //    LocationID = _locationId;
-        //}
+        public Character()
+        {
+
+        }
+
+        public Character(int Id, string Name/*, int LocationID*/)
+        {
+            ID = _id;
+            Name = _name;
+            //LocationID = _locationId;
+        }
 
         #endregion
 
@@ -63,6 +68,12 @@ namespace WPF_TBQuestGame.Models
         {
             return $"Hello my name is {_name}.";
         }
+
+        #endregion
+
+        #region OBJECTS
+
+        protected Random random = new Random();
 
         #endregion
     }

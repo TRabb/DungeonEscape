@@ -18,7 +18,7 @@ namespace WPF_TBQuestGame.PresentationLayer
         private Location _currentLocation;
         private Location _northLocation, _eastLocation, _southLocation, _westLocation;
         private string _currentLocationInformation;
-
+        private NPC _currentNPC;
         private GameItem _currentGameItem;
 
         #endregion
@@ -115,6 +115,16 @@ namespace WPF_TBQuestGame.PresentationLayer
             get { return _currentGameItem; }
             set { _currentGameItem = value; }
         }
+
+        public NPC CurrentNPC
+        {
+            get { return _currentNPC; }
+            set
+            {
+                _currentNPC = value;
+                OnPropertyChanged(nameof(CurrentNPC));
+            }
+        }
         #endregion
 
         #region CONSTRUCTORS
@@ -149,6 +159,17 @@ namespace WPF_TBQuestGame.PresentationLayer
             _player.UpdateInventoryCategories();
             _currentLocationInformation = CurrentLocation.Description;
         }
+        #endregion
+
+        #region HELPER
+
+        private int DieRoll(int sides)
+        {
+            return random.Next(1, sides + 1);
+        }
+
+        #endregion
+
 
         #region MOVEMENT
         private void OnPlayerMove()
@@ -313,7 +334,7 @@ namespace WPF_TBQuestGame.PresentationLayer
             switch (_currentGameItem)
             {
                 case Flask flask:
-                    //ProcessFlaskUse(flask);
+                    ProcessFlaskUse(flask);
                     break;
                 case Key key:
                     ProcessKeyUse(key);
@@ -323,6 +344,25 @@ namespace WPF_TBQuestGame.PresentationLayer
             }
         }
 
+        private void ProcessFlaskUse(Flask flask)
+        {
+            if (_player.Health <= 100)
+            {
+                _player.Health += flask.HealthChange;
+                _player.RemoveGameItemFromInventory(_currentGameItem);
+                if (_player.Health > 100)
+                {
+                    _player.Health = 100;
+                }
+            }
+            else
+            {
+                CurrentLocationInformation = "Your health is already full!";
+            }
+
+        }
+
+
         private void ProcessKeyUse(Key key)
         {
             string message;
@@ -331,7 +371,7 @@ namespace WPF_TBQuestGame.PresentationLayer
             {
                 case Key.UseActionType.OPENLOCATION:
                     message = _gameMap.OpenLocationsByKey(key.Id);
-                    //CurrentLocationInformation = key.UseMessage;
+                    CurrentLocationInformation = key.UseMessage;
                     break;
                 case Key.UseActionType.DAMAGEPLAYER:
                     break;
@@ -339,11 +379,175 @@ namespace WPF_TBQuestGame.PresentationLayer
                     break;
             }
         }
+
+        public void OnPlayerTalkTo()
+        {
+            if (CurrentNPC != null && CurrentNPC is ISpeak)
+            {
+                ISpeak speakingNPC = CurrentNPC as ISpeak;
+                CurrentLocationInformation = speakingNPC.Speak();
+            }
+        }
+
         #endregion
 
+        #region BATTLE METHODS
 
+        private void Battle()
+        {
+            if (_currentNPC is IBattle)
+            {
+                IBattle battleNPC = _currentNPC as IBattle;
+                int playerHitPoints = _player.Health;
+                int battleNPCHitPoints = 0;
+                string battleInformation = "";
+
+                //if (_player.CurrentWeapon != null)
+                //{
+                //    playerHitPoints = CalculatePlayerHitPoints();
+                //}
+                //else
+                //{
+                //    battleInformation = "You are entering battle without a weapon!";
+                //}
+
+                if (battleNPC.CurrentWeapon != null)
+                {
+                    battleNPCHitPoints = CalculateNPCHitPoints(battleNPC);
+                }
+                else
+                {
+                    battleInformation = $"You are entering battle against {_currentNPC.Name} who appears to be unarmed.";
+                }
+
+                battleInformation +=
+                    $"\nPlayer: {_player.BattleMode}      Hit Points: {playerHitPoints}" + Environment.NewLine +
+                    $"NPC: {battleNPC.BattleMode}       Hit Points: {battleNPCHitPoints}" + Environment.NewLine;
+
+                if (playerHitPoints >= battleNPCHitPoints)
+                {
+                    battleInformation += $"You have slain {_currentNPC.Name}";
+                    _currentLocation.NPCs.Remove(_currentNPC);
+                }
+                else
+                {
+                    battleInformation += $"You have been slain by {_currentNPC.Name}";
+                    _player.Health = 0;
+                }
+                CurrentLocationInformation = battleInformation;
+                if (_player.Health <= 0) OnPlayerDies("You have been slain.");
+
+            }
+            else
+            {
+                CurrentLocationInformation = "This NPC is angry that you tried to attack them \nand smacked you across the face!";
+                _player.Health -= 5;
+            }
+        }
+
+        private BattleModeName NPCBattleResponse()
+        {
+            BattleModeName npcBattleResponse = BattleModeName.RETREAT;
+
+            switch (DieRoll(2))
+            {
+                case 1:
+                    npcBattleResponse = BattleModeName.ATTACK;
+                    break;
+                case 2:
+                    npcBattleResponse = BattleModeName.DEFEND;
+                    break;
+            }
+
+            return npcBattleResponse;
+        }
+
+        private int CalculatePlayerHitPoints()
+        {
+            int playerHitPoints = 0;
+
+            switch (_player.BattleMode)
+            {
+                case BattleModeName.ATTACK:
+                    playerHitPoints = _player.Attack();
+                    break;
+                case BattleModeName.DEFEND:
+                    playerHitPoints = _player.Defend();
+                    break;
+            }
+
+            return playerHitPoints;
+        }
+
+        private int CalculateNPCHitPoints(IBattle battleNPC)
+        {
+            int battleNPCHitPoints = 0;
+            
+            switch (NPCBattleResponse())
+            {
+                case BattleModeName.ATTACK:
+                    battleNPCHitPoints = battleNPC.Attack();
+                    _player.Health -= 5;
+                    break;
+                case BattleModeName.DEFEND:
+                    battleNPCHitPoints = battleNPC.Defend();
+                    _player.Health -= 3;
+                    break;
+                default:
+                    break;
+            }
+
+            return battleNPCHitPoints;
+        }
+
+        public void OnPlayerAttack()
+        {
+            _player.BattleMode = BattleModeName.ATTACK;
+            Battle();
+        }
+
+        public void OnPlayerDefend()
+        {
+            _player.BattleMode = BattleModeName.DEFEND;
+            Battle();
+        }
+
+        private void OnPlayerDies(string message)
+        {
+            string messagetext = message +
+                "\n\nWould you like to play again?";
+
+            string titleText = "Death";
+            MessageBoxButton button = MessageBoxButton.YesNo;
+            MessageBoxResult result = MessageBox.Show(messagetext, titleText, button);
+
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    ResetPlayer();
+                    break;
+                case MessageBoxResult.No:
+                    QuitApplication();
+                    break;
+            }
+        }
+
+        private void ResetPlayer()
+        {
+            Environment.Exit(0);
+        }
+
+        private void QuitApplication()
+        {
+            Environment.Exit(0);
+        }
         #endregion
 
+        #region OBJECTS
+
+        private Random random = new Random();
+
+        #endregion
 
     }
 }

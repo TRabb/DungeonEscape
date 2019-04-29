@@ -69,5 +69,29 @@ namespace WPF_TBQuestGame.PresentationLayer
                 _gameSessionViewModel.RemoveItemFromInventory();
             }
         }
+
+        private void Button_Use_Click(object sender, RoutedEventArgs e)
+        {
+            if(InventoryDataGrid.SelectedItem != null)
+            {
+                _gameSessionViewModel.OnUseGameItem();
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (LocationNPCsDataGrid.SelectedItem != null)
+            {
+                _gameSessionViewModel.OnPlayerTalkTo();
+            }
+        }
+
+        private void Button_Attack_Click(object sender, RoutedEventArgs e)
+        {
+            if (LocationNPCsDataGrid.SelectedItem != null)
+            {
+                _gameSessionViewModel.OnPlayerAttack();
+            }
+        }
     }
 }
